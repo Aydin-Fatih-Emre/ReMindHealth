@@ -1,4 +1,3 @@
-/* Search Page Styles */
 
 .app-frame {
     display: flex;
@@ -15,10 +14,10 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     width: 100%;
     max-width: 430px;
-    height: 90vh; /* fast voller Bildschirm */
+    height: 90vh; 
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Inhalt mittig */
+    justify-content: flex-start; 
     align-items: stretch;
     text-align: left;
     padding: 2rem 1.5rem;
@@ -27,7 +26,6 @@
     font-family: "Segoe UI", system-ui, sans-serif;
 }
 
-/* Back Button */
 .zurueck-wrapper {
     position: fixed;
     top: 1.5rem;
@@ -53,7 +51,6 @@
     display: block;
 }
 
-/* Page Title */
 .page-title {
     display: flex; 
     gap: 0.5rem;
@@ -65,22 +62,21 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Search Box */
 .search-box {   
   display: grid;
-  grid-template-columns: 1fr auto; /* Input füllt, Button kompakt rechts */
+  grid-template-columns: 1fr auto; 
   gap: 0.75rem;
   width: 100%;
-  max-width: 600px;    /* die eigentliche Breite der Suchleiste */
-  margin: 0;           /* innerhalb der Section zentriert durch container */
+  max-width: 600px;    
+  margin: 0;           
 }
 
 
 .search-input {
   width: 100%;
-  padding: 0.9rem 1rem;              /* gleiche Höhe wie dein next-btn */
-  border: 1px solid #e5e7eb;         /* feiner Rand für Kontrast */
-  border-radius: 12px;               /* Kapsel-Rundung */
+  padding: 0.9rem 1rem;            
+  border: 1px solid #e5e7eb;         
+  border-radius: 12px;               
   font-size: 1rem;
   color: #111827;
   background-color: #fff;

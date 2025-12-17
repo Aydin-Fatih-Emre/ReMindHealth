@@ -208,10 +208,7 @@ namespace ReMindHealth.Components.Pages
             StateHasChanged();
             NotificationService.Notify(NotificationSeverity.Info, "Abgebrochen", "Verarbeitung wurde abgebrochen");
         }
-        void Zurueck()
-        {
-            NavigationManager.NavigateTo("/dashboard");
-        }
+    
         public void Dispose()
 
         {

@@ -10,10 +10,11 @@
 @layout AppLayout
 
 <div class="app-frame">
+    <button class="zurueck-wrapper" @onclick='() => NavigationManager.NavigateTo("/dashboard")'>
+        <img src="images/zurueck.png" alt="Zurück" class="zurueck-button" />
+    </button>
     <div class="search-container">
-        <button class="zurueck-wrapper" @onclick='() => NavigationManager.NavigateTo("/dashboard")'>
-            <img src="images/zurueck.png" alt="Zurück" class="zurueck-button" />
-        </button>
+      
 
         <h2 class="page-title">
         Krankheiten/Diagnosen durchsuchen 

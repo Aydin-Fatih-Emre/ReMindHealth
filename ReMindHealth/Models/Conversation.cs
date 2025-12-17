@@ -23,7 +23,7 @@ public class Conversation
     public bool IsDeleted { get; set; }
 
     // Navigation properties
-    public ReMindHealth.Data.ApplicationUser User { get; set; } = null!;
+    public Data.ApplicationUser User { get; set; } = null!;
     public ICollection<ExtractedAppointment> ExtractedAppointments { get; set; } = new List<ExtractedAppointment>();
     public ICollection<ExtractedTask> ExtractedTasks { get; set; } = new List<ExtractedTask>();
     public ICollection<ExtractedNote> ExtractedNotes { get; set; } = new List<ExtractedNote>();

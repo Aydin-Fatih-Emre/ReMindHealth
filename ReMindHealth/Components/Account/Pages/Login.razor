@@ -37,11 +37,14 @@
                 <ValidationMessage For="() => Input.Password" class="text-danger" />
             </div>
 
-            <div class="form-check">
-                <InputCheckbox @bind-Value="Input.RememberMe" class="form-check-input" />
-                <label class="form-check-label">
-                    Angemeldet bleiben
-                </label>
+            <div class="form-check-container">
+                <div class="form-check">
+                    <InputCheckbox @bind-Value="Input.RememberMe" class="form-check-input" />
+                    <label class="form-check-label">
+                        Angemeldet bleiben
+                    </label>
+                </div>
+                <a href="/Account/ForgotPassword" class="forgot-password-link">Passwort vergessen?</a>
             </div>
 
             <button type="submit" class="btn-submit" disabled="@isSubmitting">

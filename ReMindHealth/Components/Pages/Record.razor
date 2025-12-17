@@ -8,7 +8,7 @@
 @layout AppLayout
 
 <div class="app-frame">
-    <button class="zurueck-wrapper" @onclick="Zurueck">
+    <button class="zurueck-wrapper" @onclick='() => NavigationManager.NavigateTo("/dashboard")'>
         <img src="images/zurueck.png" alt="Zurück" class="zurueck-button" />
     </button>
 
@@ -70,4 +70,5 @@
                    class="note-input" />
         </div>
     </div>
+
 </div>

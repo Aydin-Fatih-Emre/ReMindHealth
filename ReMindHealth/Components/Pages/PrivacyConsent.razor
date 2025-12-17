@@ -8,10 +8,13 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @rendermode InteractiveServer
 
+
+
+<button class="zurueck-wrapper" @onclick='() => NavigationManager.NavigateTo("/dashboard")'>
+    <img src="images/zurueck.png" alt="Zurück" class="zurueck-button" />
+</button>
 <div class="privacy-consent-container">
-    <button class="back-button" @onclick="GoBack">
-        <span>←</span>
-    </button>
+   
 
     <div class="consent-card">
         <h1>Einverständnis erforderlich</h1>
@@ -84,8 +87,4 @@
         }
     }
 
-    private void GoBack()
-    {
-        NavigationManager.NavigateTo("/dashboard");
-    }
 }
