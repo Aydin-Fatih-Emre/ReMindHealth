@@ -25,13 +25,43 @@
 }
 
 /* Überschrift */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Überschrift */
 .greeting {
     font-size: 1.8rem;
     font-weight: 800;
-    margin-bottom: 1.5rem;
-    text-align: center;
+    margin: 0;
 }
 
+/* Settings Icon Button */
+.settings-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    border-radius: 50%;
+    color: #667eea;
+}
+
+    .settings-icon:hover {
+        background-color: #f3f4f6;
+        transform: rotate(90deg);
+    }
+
+    .settings-icon svg {
+        width: 28px;
+        height: 28px;
+    }
 /* Grid der 4 Feature-Kacheln */
 .button-grid {
     display: grid;
@@ -138,5 +168,13 @@
         height: 100vh;
         border-radius: 0;
         box-shadow: none;
+    }
+    .greeting {
+        font-size: 1.5rem;
+    }
+
+    .settings-icon svg {
+        width: 24px;
+        height: 24px;
     }
 }

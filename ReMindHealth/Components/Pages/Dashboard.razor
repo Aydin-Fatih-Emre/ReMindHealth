@@ -6,8 +6,16 @@
 @layout AppLayout
 <div class="app-frame">
     <div class="home-container">
-        <h2 class="greeting">@greeting</h2>
-
+        <div class="dashboard-header">
+            <h2 class="greeting">@greeting</h2>
+            <button class="settings-icon" @onclick="@(() => NavigateTo("/Account/Manage"))" title="Kontoeinstellungen">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6m0 6v6m-7-7h6m6 0h6"></path>
+                    <path d="M19.4 15a9 9 0 01-7.4 4 9 9 0 01-7.4-4m14.8-6a9 9 0 00-7.4-4 9 9 0 00-7.4 4"></path>
+                </svg>
+            </button>
+        </div>
         <!-- Grid mit 4 Features -->
         <div class="button-grid">
             <div class="feature-card" @onclick="@(() => NavigateTo("/privacy-consent"))">

@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
-using ReMindHealth.Components.Account.Pages;
-using ReMindHealth.Components.Account.Pages.Manage;
 using ReMindHealth.Data;
 
 namespace Microsoft.AspNetCore.Routing
