@@ -22,6 +22,7 @@ public class Conversation
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public bool IsDeleted { get; set; }
 
+    public bool IsFavorite { get; set; } = false;
     // Navigation properties
     public Data.ApplicationUser User { get; set; } = null!;
     public ICollection<ExtractedAppointment> ExtractedAppointments { get; set; } = new List<ExtractedAppointment>();

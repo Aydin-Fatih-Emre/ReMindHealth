@@ -4,8 +4,6 @@
 @using ReMindHealth.Components.Layout
 @using ReMindHealth.Models
 @using ReMindHealth.Services.Interfaces
-@inject NavigationManager NavigationManager
-@inject IConversationService ConversationService
 @rendermode InteractiveServer
 @layout AppLayout
 
@@ -18,26 +16,44 @@
             <h2 class="greeting">Zusammenfassungen</h2>
         </div>
 
+        <div class="filter-controls">
+            <button class="filter-button @(showOnlyFavorites ? "active" : "")"
+                    @onclick="() => showOnlyFavorites = !showOnlyFavorites">
+                <i class="bi bi-star-fill"></i>
+                @(showOnlyFavorites ? "Alle anzeigen" : "Nur Favoriten")
+            </button>
+        </div>
+
         @if (isLoading)
         {
             <div class="loading-state">
                 <p>Lade Zusammenfassungen...</p>
             </div>
         }
-        else if (!conversations.Any())
+        else if (!FilteredConversations.Any())
         {
             <div class="no-summaries">
-                <p>Noch keine Zusammenfassungen vorhanden.</p>
-                <p>Erstellen Sie Ihre erste Aufnahme!</p>
-                <button class="primary-button" @onclick="@(() => NavigationManager.NavigateTo("/record"))">
-                    Jetzt aufnehmen
-                </button>
+                @if (showOnlyFavorites)
+                {
+                    <p>Keine favorisierten Zusammenfassungen vorhanden.</p>
+                    <button class="primary-button" @onclick="() => showOnlyFavorites = false">
+                        Alle anzeigen
+                    </button>
+                }
+                else
+                {
+                    <p>Noch keine Zusammenfassungen vorhanden.</p>
+                    <p>Erstellen Sie Ihre erste Aufnahme!</p>
+                    <button class="primary-button" @onclick="@(() => NavigationManager.NavigateTo("/record"))">
+                        Jetzt aufnehmen
+                    </button>
+                }
             </div>
         }
         else
         {
             <div class="summary-list">
-                @foreach (var conversation in conversations)
+                @foreach (var conversation in FilteredConversations)
                 {
                     <div class="conversation-card @(selectedConversation?.ConversationId == conversation.ConversationId ? "selected" : "")"
                          @onclick="@(() => SelectConversation(conversation))">
@@ -49,6 +65,10 @@
                                 <h4 class="conversation-title">@conversation.Title</h4>
                                 <p class="conversation-date">@conversation.RecordedAt.ToLocalTime().ToString("dd. MMM yyyy, HH:mm")</p>
                             </div>
+                            <button class="favorite-button" @onclick="() => ToggleFavorite(conversation)" @onclick:stopPropagation="true">
+                                <i class="bi bi-star@(conversation.IsFavorite ? "-fill" : "")"
+                                   style="color: @(conversation.IsFavorite ? "#ffc107" : "#ccc");"></i>
+                            </button>
                             <span class="status-badge @conversation.ProcessingStatus.ToLower()">
                                 @GetStatusText(conversation.ProcessingStatus)
                             </span>
@@ -145,68 +165,3 @@
         }
     </div>
 </div>
-
-@code {
-    private bool isLoading = true;
-    private List<Conversation> conversations = new();
-    private Conversation? selectedConversation;
-    private Conversation? conversationDetails;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadConversations();
-    }
-
-    private async Task LoadConversations()
-    {
-        try
-        {
-            isLoading = true;
-            conversations = await ConversationService.GetUserConversationsAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error loading conversations: {ex.Message}");
-        }
-        finally
-        {
-            isLoading = false;
-        }
-    }
-
-    private async Task SelectConversation(Conversation conversation)
-    {
-        if (selectedConversation?.ConversationId == conversation.ConversationId)
-        {
-            // Toggle off if clicking same conversation
-            selectedConversation = null;
-            conversationDetails = null;
-        }
-        else
-        {
-            selectedConversation = conversation;
-            // Load full details with appointments, tasks, notes
-            conversationDetails = await ConversationService.GetConversationWithDetailsAsync(conversation.ConversationId);
-        }
-    }
-
-    private string GetStatusText(string status)
-    {
-        return status switch
-        {
-            "Pending" => "Ausstehend",
-            "Converting" => "Konvertiere...",
-            "Transcribing" => "Transkribiere...",
-            "Transcribed" => "Transkribiert",
-            "Analyzing" => "Analysiere...",
-            "Completed" => "Abgeschlossen",
-            "Failed" => "Fehler",
-            _ => status
-        };
-    }
-
-    private void Zurueck()
-    {
-        NavigationManager.NavigateTo("/dashboard");
-    }
-}
