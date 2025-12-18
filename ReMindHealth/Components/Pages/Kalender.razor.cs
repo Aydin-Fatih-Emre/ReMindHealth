@@ -16,7 +16,9 @@ namespace ReMindHealth.Components.Pages
         private bool isLoading = true;
         private List<ExtractedAppointment> termine = new();
         private ExtractedAppointment? selectedTermin;
-
+        private bool showAddModal = false;
+        private ExtractedAppointment newTermin = new();
+        private string errorMessage = string.Empty;
         protected override async Task OnInitializedAsync()
         {
             await LoadAppointments();
@@ -32,7 +34,8 @@ namespace ReMindHealth.Components.Pages
                 // Load all appointments for this user, ordered by date
                 termine = await Context.ExtractedAppointments
                     .Include(a => a.Conversation)
-                    .Where(a => a.Conversation.UserId == userId && !a.Conversation.IsDeleted)
+                    .Where(a => a.UserId == userId &&
+                               (a.ConversationId == null || !a.Conversation.IsDeleted))
                     .OrderBy(a => a.AppointmentDateTime)
                     .ToListAsync();
             }
@@ -54,6 +57,58 @@ namespace ReMindHealth.Components.Pages
         private void NavigateTo(string url)
         {
             NavigationManager.NavigateTo(url);
+        }
+        private void OpenAddModal()
+        {
+            newTermin = new ExtractedAppointment
+            {
+                AppointmentId = Guid.NewGuid(),
+                AppointmentDateTime = DateTime.Now,
+                CreatedAt = DateTime.UtcNow
+            };
+            errorMessage = string.Empty;
+            showAddModal = true;
+        }
+
+        private void CloseAddModal()
+        {
+            showAddModal = false;
+            newTermin = new();
+            errorMessage = string.Empty;
+        }
+        private async Task SaveNewTermin()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(newTermin.Title))
+                {
+                    errorMessage = "Titel ist erforderlich";
+                    return;
+                }
+
+                if (newTermin.AppointmentDateTime == default)
+                {
+                    errorMessage = "Datum und Uhrzeit sind erforderlich";
+                    return;
+                }
+
+                var userId = await CurrentUserService.GetUserIdAsync();
+
+                newTermin.UserId = userId;
+                newTermin.ConversationId = null;
+                newTermin.CreatedAt = DateTime.UtcNow;
+
+                Context.ExtractedAppointments.Add(newTermin);
+                await Context.SaveChangesAsync();
+
+                await LoadAppointments();
+                CloseAddModal();
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Fehler beim Speichern: {ex.Message}";
+                Console.WriteLine($"Error saving appointment: {ex.Message}");
+            }
         }
     }
 }

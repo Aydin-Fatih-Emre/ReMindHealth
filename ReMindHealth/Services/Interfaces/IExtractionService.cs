@@ -6,5 +6,6 @@ public interface IExtractionService
 {
     Task<ExtractionResult> ExtractInformationAsync(
         string transcriptionText,
+        string userId,
         CancellationToken cancellationToken = default);
 }

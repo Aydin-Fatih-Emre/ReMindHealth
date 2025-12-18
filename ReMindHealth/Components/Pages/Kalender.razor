@@ -15,7 +15,9 @@
                 <i class="bi bi-calendar3"></i> Termine
             </h2>
         </div>
-
+        <button class="btn btn-primary" @onclick="OpenAddModal">
+            <i class="bi bi-plus-circle"></i> Neuer Termin
+        </button>
         @if (isLoading)
         {
             <div class="loading-state">
@@ -100,4 +102,58 @@
             }
         }
     </div>
+
+    @if (showAddModal)
+    {
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Neuer Termin</h5>
+                        <button type="button" class="btn-close" @onclick="CloseAddModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        @if (!string.IsNullOrEmpty(errorMessage))
+                        {
+                            <div class="alert alert-danger">@errorMessage</div>
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label">Titel *</label>
+                            <input type="text" class="form-control" @bind="newTermin.Title" placeholder="z.B. Arzttermin" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Datum und Uhrzeit *</label>
+                            <input type="datetime-local" class="form-control" @bind="newTermin.AppointmentDateTime" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Beschreibung</label>
+                            <textarea class="form-control" rows="3" @bind="newTermin.Description" placeholder="Optional"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ort</label>
+                            <input type="text" class="form-control" @bind="newTermin.Location" placeholder="Optional" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Dauer (Minuten)</label>
+                            <input type="number" class="form-control" @bind="newTermin.DurationMinutes" placeholder="Optional" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Teilnehmer</label>
+                            <input type="text" class="form-control" @bind="newTermin.AttendeeNames" placeholder="Optional, z.B. Dr. Schmidt" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="CloseAddModal">Abbrechen</button>
+                        <button type="button" class="btn btn-primary" @onclick="SaveNewTermin">Speichern</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

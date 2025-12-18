@@ -28,6 +28,7 @@ public class GeminiExtractionService : IExtractionService
 
     public async Task<ExtractionResult> ExtractInformationAsync(
         string transcriptionText,
+        string userId,
         CancellationToken cancellationToken = default)
     {
         try
@@ -39,7 +40,7 @@ public class GeminiExtractionService : IExtractionService
 
             _logger.LogInformation("Gemini response received: {Length} characters", response?.Length ?? 0);
 
-            var result = ParseExtractionResponse(response ?? string.Empty);
+            var result = ParseExtractionResponse(response ?? string.Empty, userId);
 
             _logger.LogInformation(
                 "Extraction completed: {Appointments} appointments, {Tasks} tasks, {Notes} notes",
@@ -175,7 +176,7 @@ Antworte NUR mit folgendem JSON-Format (keine zusätzlichen Texte!):
 **Antwort (nur JSON):**";
     }
 
-    private ExtractionResult ParseExtractionResponse(string responseText)
+    private ExtractionResult ParseExtractionResponse(string responseText, string userId)
     {
         try
         {
@@ -215,6 +216,7 @@ Antworte NUR mit folgendem JSON-Format (keine zusätzlichen Texte!):
                 Appointments = parsed.Appointments.Select(a => new ExtractedAppointment
                 {
                     AppointmentId = Guid.NewGuid(),
+                    UserId = userId,
                     Title = a.Title ?? "Unbenannter Termin",
                     Description = a.Description,
                     AppointmentDateTime = DateTime.SpecifyKind(a.AppointmentDateTime, DateTimeKind.Local).ToUniversalTime(),

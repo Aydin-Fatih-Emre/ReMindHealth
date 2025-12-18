@@ -139,7 +139,7 @@ public class ConversationService : IConversationService
         {
             var transcriptionData = await context.Conversations
                 .Where(c => c.ConversationId == conversationId)
-                .Select(c => new { c.TranscriptionText })
+                .Select(c => new { c.TranscriptionText, c.UserId })  
                 .FirstOrDefaultAsync();
 
             if (transcriptionData == null || string.IsNullOrEmpty(transcriptionData.TranscriptionText))
@@ -154,7 +154,9 @@ public class ConversationService : IConversationService
                     .SetProperty(c => c.ProcessingStatus, "Analyzing")
                     .SetProperty(c => c.UpdatedAt, DateTime.UtcNow));
 
-            var extraction = await extractionService.ExtractInformationAsync(transcriptionData.TranscriptionText);
+            var extraction = await extractionService.ExtractInformationAsync(
+                transcriptionData.TranscriptionText,
+                transcriptionData.UserId); 
 
             var updateBuilder = context.Conversations
                 .Where(c => c.ConversationId == conversationId)
@@ -164,7 +166,7 @@ public class ConversationService : IConversationService
                     .SetProperty(c => c.ProcessedAt, DateTime.UtcNow)
                     .SetProperty(c => c.UpdatedAt, DateTime.UtcNow));
 
-            // If we have corrected transcription, update it too
+
             if (!string.IsNullOrEmpty(extraction.CorrectedTranscription))
             {
                 await context.Conversations
