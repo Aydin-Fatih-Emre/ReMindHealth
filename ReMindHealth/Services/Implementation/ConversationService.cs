@@ -224,53 +224,6 @@ public class ConversationService : IConversationService
         }
     }
 
-    private async Task TranscribeOnlyAsync(Guid conversationId)
-    {
-        using var scope = _serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var transcriptionService = scope.ServiceProvider.GetRequiredService<ITranscriptionService>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<ConversationService>>();
-
-        try
-        {
-            var conversation = await context.Conversations.FindAsync(conversationId);
-            if (conversation == null)
-            {
-                return;
-            }
-
-            conversation.ProcessingStatus = "Transcribing";
-            await context.SaveChangesAsync();
-
-            // Option 1: Use Stream directly (most efficient - no extra memory allocation)
-            using var fileStream = new FileStream(conversation.AudioFilePath!, FileMode.Open, FileAccess.Read);
-            var transcription = await transcriptionService.TranscribeFromStreamAsync(fileStream);
-
-            conversation.TranscriptionText = transcription.Text;
-            conversation.TranscriptionLanguage = transcription.Language;
-            conversation.ProcessingStatus = "Transcribed";
-            await context.SaveChangesAsync();
-
-            logger.LogInformation(
-                "Transcription completed for conversation {ConversationId}. Confidence: {Confidence}",
-                conversationId,
-                transcription.Confidence);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[TranscribeOnlyAsync] ERROR: {ex.Message}");
-            Console.WriteLine($"[TranscribeOnlyAsync] Stack: {ex.StackTrace}");
-            logger.LogError(ex, "Error transcribing conversation {ConversationId}", conversationId);
-
-            var conversation = await context.Conversations.FindAsync(conversationId);
-            if (conversation != null)
-            {
-                conversation.ProcessingStatus = "Failed";
-                conversation.ProcessingError = ex.Message;
-                await context.SaveChangesAsync();
-            }
-        }
-    }
 
     public Task<Conversation?> GetConversationAsync(Guid conversationId, CancellationToken cancellationToken = default)
     {
