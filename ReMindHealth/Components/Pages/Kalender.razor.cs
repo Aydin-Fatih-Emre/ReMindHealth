@@ -96,6 +96,7 @@ namespace ReMindHealth.Components.Pages
 
                 newTermin.UserId = userId;
                 newTermin.ConversationId = null;
+                newTermin.AppointmentDateTime = newTermin.AppointmentDateTime.ToUniversalTime(); // Convert to UTC
                 newTermin.CreatedAt = DateTime.UtcNow;
 
                 Context.ExtractedAppointments.Add(newTermin);
