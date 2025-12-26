@@ -111,5 +111,21 @@ namespace ReMindHealth.Components.Pages
                 Console.WriteLine($"Error saving appointment: {ex.Message}");
             }
         }
+        private string GetDueStatus(ExtractedAppointment termin)
+    {
+    var now = DateTime.UtcNow;
+
+    if (termin.AppointmentDateTime < now)
+        return "overdue"; // überfällig
+
+    if (termin.AppointmentDateTime.Date == now.Date)
+        return "today"; // heute
+
+    if (termin.AppointmentDateTime <= now.AddDays(3))
+        return "soon"; // bald fällig
+
+    return "future"; // später
+    }
+
     }
 }

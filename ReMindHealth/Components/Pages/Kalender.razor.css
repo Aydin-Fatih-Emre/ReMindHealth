@@ -24,6 +24,26 @@
   overflow-x: hidden;
 
 }
+.termin-item.overdue {
+    border-color: #ff4d4d;
+    background: #ffe5e5;
+}
+
+.termin-item.today {
+    border-color: #ff9800;
+    background: #fff3e0;
+}
+
+.termin-item.soon {
+    border-color: #2196f3;
+    background: #e3f2fd;
+}
+
+.termin-item.future {
+    border-color: #4caf50;
+    background: #e8f5e9;
+}
+
 
 /* Kalender Page Styles */
 

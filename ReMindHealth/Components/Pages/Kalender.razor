@@ -37,17 +37,19 @@
         {
             <div class="termin-list">
                 @foreach (var termin in termine)
-                {
-                    <div class="termin-item @(selectedTermin?.AppointmentId == termin.AppointmentId ? "active" : "")"
-                         @onclick="() => SelectTermin(termin)">
-                        <div class="termin-date">
-                            @termin.AppointmentDateTime.ToLocalTime().ToString("dddd dd. MMM", new System.Globalization.CultureInfo("de-DE"))
-                        </div>
-                        <div class="termin-time">
-                            @termin.AppointmentDateTime.ToLocalTime().ToString("HH:mm")
-                        </div>
-                    </div>
-                }
+    {
+        var status = GetDueStatus(termin);
+
+        <div class="termin-item @(status) @(selectedTermin?.AppointmentId == termin.AppointmentId ? "active" : "")"
+             @onclick="() => SelectTermin(termin)">
+            <div class="termin-date">
+                @termin.AppointmentDateTime.ToLocalTime().ToString("dddd dd. MMM", new System.Globalization.CultureInfo("de-DE"))
+            </div>
+            <div class="termin-time">
+                @termin.AppointmentDateTime.ToLocalTime().ToString("HH:mm")
+            </div>
+        </div>
+    }
             </div>
 
             @if (selectedTermin != null)
