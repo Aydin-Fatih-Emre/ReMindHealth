@@ -98,8 +98,6 @@ public class GeminiExtractionService : IExtractionService
         if (!response.IsSuccessStatusCode)
         {
             _logger.LogError("Gemini API error: {StatusCode} - {Response}", response.StatusCode, responseText);
-
-            // If v1 fails, try v1beta as fallback
             _logger.LogWarning("Trying v1beta API as fallback...");
             url = $"https://generativelanguage.googleapis.com/v1beta/models/{_model}:generateContent?key={_apiKey}";
 

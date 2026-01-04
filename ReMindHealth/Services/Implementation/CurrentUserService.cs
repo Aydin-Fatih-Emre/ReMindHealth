@@ -29,21 +29,4 @@ public class CurrentUserService : ICurrentUserService
 
         return user.Id;
     }
-
-    public async Task<string?> GetUserEmailAsync()
-    {
-        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        return authState.User.FindFirstValue(ClaimTypes.Email);
-    }
-
-    public async Task<string?> GetUserFullNameAsync()
-    {
-        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        var user = await _userManager.GetUserAsync(authState.User);
-
-        if (user == null)
-            return null;
-
-        return $"{user.FirstName} {user.LastName}".Trim();
-    }
 }

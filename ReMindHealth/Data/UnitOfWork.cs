@@ -17,7 +17,6 @@ public sealed class UnitOfWork : IUnitOfWork
         _serviceProvider = serviceProvider;
     }
 
-    // Lazy-loaded repositories using singleton pattern
     public IConversationRepository ConversationRepository =>
         GetRepositorySingleton<IConversationRepository>();
 
@@ -30,8 +29,6 @@ public sealed class UnitOfWork : IUnitOfWork
     public INoteRepository NoteRepository =>
         GetRepositorySingleton<INoteRepository>();
 
-    public IUserSettingsRepository UserSettingsRepository =>
-        GetRepositorySingleton<IUserSettingsRepository>();
 
     private T GetRepositorySingleton<T>([CallerMemberName] string? repositoryName = null)
         where T : class

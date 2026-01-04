@@ -7,8 +7,6 @@ public class ExtractedNote
     public string NoteType { get; set; } = "General";
     public string? Title { get; set; }
     public string Content { get; set; } = string.Empty;
-    public string? Category { get; set; }
-    public string? Tags { get; set; }
     public decimal? ConfidenceScore { get; set; }
     public bool IsPinned { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

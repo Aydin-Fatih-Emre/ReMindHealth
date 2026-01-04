@@ -43,7 +43,7 @@ namespace ReMindHealth.Components.Account.Pages
 
                 for (int i = 3; i > 0; i--)
                 {
-                    successMessage = $"✅ Konto erfolgreich erstellt! Weiterleitung in {i} Sekunden...";
+                    successMessage = $" Konto erfolgreich erstellt! Weiterleitung in {i} Sekunden...";
                     StateHasChanged();
                     await Task.Delay(1000);
                 }

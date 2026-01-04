@@ -7,7 +7,6 @@ public class ExtractedAppointment
     public Guid AppointmentId { get; set; }
     public string UserId { get; set; } = string.Empty;
     public Guid? ConversationId { get; set; }
-    public Guid? CalendarEventId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Location { get; set; }
@@ -19,5 +18,6 @@ public class ExtractedAppointment
 
     // Navigation property
     public Conversation? Conversation { get; set; } = null!;
+
     public ApplicationUser User { get; set; } = null!;
 }

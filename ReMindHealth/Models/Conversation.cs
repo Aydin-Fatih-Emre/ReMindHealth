@@ -1,14 +1,12 @@
-﻿namespace ReMindHealth.Models;
+﻿using ReMindHealth.Data;
+
+namespace ReMindHealth.Models;
 
 public class Conversation
 {
     public Guid ConversationId { get; set; }
     public string UserId { get; set; } = string.Empty;
     public string? Title { get; set; }
-    public string? ConversationType { get; set; }
-    public string? Location { get; set; }
-    public string? ParticipantNames { get; set; }
-    public string? AudioFilePath { get; set; }
     public int? AudioDurationSeconds { get; set; }
     public string? AudioFormat { get; set; }
     public string? TranscriptionText { get; set; }
@@ -21,10 +19,10 @@ public class Conversation
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public bool IsDeleted { get; set; }
-
     public bool IsFavorite { get; set; } = false;
+
     // Navigation properties
-    public Data.ApplicationUser User { get; set; } = null!;
+    public ApplicationUser User { get; set; } = null!;
     public ICollection<ExtractedAppointment> ExtractedAppointments { get; set; } = new List<ExtractedAppointment>();
     public ICollection<ExtractedTask> ExtractedTasks { get; set; } = new List<ExtractedTask>();
     public ICollection<ExtractedNote> ExtractedNotes { get; set; } = new List<ExtractedNote>();

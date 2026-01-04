@@ -19,51 +19,6 @@ public class AssemblyAITranscriptionService : ITranscriptionService
         _client = new AssemblyAIClient(apiKey);
         _logger = logger;
     }
-    public async Task<TranscriptionResult> TranscribeAsync(
-        string audioFilePath,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            _logger.LogInformation("Transcribing file: {FilePath}", audioFilePath);
-
-            var transcript = await _client.Transcripts.TranscribeAsync(
-                new FileInfo(audioFilePath),
-                new TranscriptOptionalParams
-                {
-                    LanguageCode = TranscriptLanguageCode.De,
-                    Punctuate = true,
-                    FormatText = true
-                }
-            );
-
-            if (transcript.Status == TranscriptStatus.Error)
-            {
-                throw new Exception($"Transcription failed: {transcript.Error}");
-            }
-
-            return new TranscriptionResult
-            {
-                Text = transcript.Text ?? string.Empty,
-                Language = "de",
-                Duration = transcript.AudioDuration / 1000.0,
-                Confidence = transcript.Confidence ?? 0.0,
-                Words = transcript.Words?.Select(w => new TranscriptionWord
-                {
-                    Text = w.Text,
-                    Start = w.Start / 1000.0,
-                    End = w.End / 1000.0,
-                    Confidence = w.Confidence
-                }).ToList()
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error during transcription");
-            throw;
-        }
-    }
-
     public async Task<TranscriptionResult> TranscribeFromStreamAsync(
         Stream audioStream,
         CancellationToken cancellationToken = default)
@@ -72,7 +27,7 @@ public class AssemblyAITranscriptionService : ITranscriptionService
         {
             _logger.LogInformation("Transcribing from stream");
 
-            // AssemblyAI SDK supports Stream directly!
+            // AssemblyAI SDK supports Stream directly
             var transcript = await _client.Transcripts.TranscribeAsync(
                 audioStream,
                 new TranscriptOptionalParams

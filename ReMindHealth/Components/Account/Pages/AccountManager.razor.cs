@@ -110,8 +110,6 @@ namespace ReMindHealth.Components.Account.Pages
                 {
                     await SignInManager.RefreshSignInAsync(currentUser);
                     successMessage = " Passwort erfolgreich geändert!";
-
-                    // Clear password fields
                     PasswordInput = new PasswordInputModel();
                 }
                 else

@@ -8,7 +8,6 @@ public interface IUnitOfWork : IDisposable
     IAppointmentRepository AppointmentRepository { get; }
     ITaskRepository TaskRepository { get; }
     INoteRepository NoteRepository { get; }
-    IUserSettingsRepository UserSettingsRepository { get; }
 
     Task SaveAsync(CancellationToken cancellationToken = default);
 }

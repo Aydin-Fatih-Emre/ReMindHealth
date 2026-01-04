@@ -195,7 +195,7 @@ namespace ReMindHealth.Components.Pages
                     "Wird im Hintergrund verarbeitet");
             }
             catch (Exception ex)
-            {
+            {   
                 Console.WriteLine($"[StartProcessing] Error: {ex.Message}");
                 NotificationService.Notify(NotificationSeverity.Error, "Fehler", ex.Message);
             }

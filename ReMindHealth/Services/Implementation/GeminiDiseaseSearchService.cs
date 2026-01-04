@@ -127,9 +127,8 @@ WICHTIG:
         var json = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        // ✅ Add retry logic with exponential backoff
         int maxRetries = 3;
-        int retryDelay = 2000; // Start with 2 seconds
+        int retryDelay = 2000; 
 
         for (int i = 0; i < maxRetries; i++)
         {
@@ -153,7 +152,6 @@ WICHTIG:
                     return generatedText;
                 }
 
-                // If service unavailable (503), retry
                 if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable && i < maxRetries - 1)
                 {
                     _logger.LogWarning("Gemini API overloaded, retrying in {Delay}ms...", retryDelay);
@@ -161,8 +159,6 @@ WICHTIG:
                     retryDelay *= 2; // Exponential backoff: 2s, 4s, 8s
                     continue;
                 }
-
-                // Other errors or last retry - throw exception
                 throw new Exception($"Gemini API error: {response.StatusCode} - {responseText}");
             }
             catch (Exception ex) when (i < maxRetries - 1)
