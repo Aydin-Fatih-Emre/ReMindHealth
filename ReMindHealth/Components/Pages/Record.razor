@@ -1,12 +1,10 @@
 @page "/record"
 @attribute [Authorize]
-@using Microsoft.AspNetCore.Authorization
-@using ReMindHealth.Components.Layout
-@using ReMindHealth.Services.Interfaces
 @inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 @layout AppLayout
-
+<RadzenNotification/>
 <div class="app-frame">
     <button class="zurueck-wrapper" @onclick='() => NavigationManager.NavigateTo("/dashboard")'>
         <img src="images/zurueck.png" alt="Zurück" class="zurueck-button" />
@@ -62,13 +60,6 @@
             </div>
         }
 
-        <div class="note-section">
-            <label>Notiz hinzufügen (optional)</label>
-            <input type="text"
-                   @bind="noteText"
-                   placeholder="z.B. Arzttermin, Rezept abholen..."
-                   class="note-input" />
-        </div>
     </div>
 
 </div>

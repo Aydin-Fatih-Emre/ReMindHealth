@@ -42,8 +42,6 @@ services:
       - Gemini__ApiKey=${GEMINI_API_KEY}
       - Gemini__Model=gemini-2.5-flash
       
-      # Audio Storage
-      - AudioStorage__Path=/app/wwwroot/audio
     ports:
       - "5000:8080"
     depends_on:

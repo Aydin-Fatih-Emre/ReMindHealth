@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using ReMindHealth.Data;
+using ReMindHealth.Domain.Models;
 
 namespace ReMindHealth.Components.Account.Pages
 {
@@ -43,7 +43,7 @@ namespace ReMindHealth.Components.Account.Pages
 
                 for (int i = 3; i > 0; i--)
                 {
-                    successMessage = $"✅ Konto erfolgreich erstellt! Weiterleitung in {i} Sekunden...";
+                    successMessage = $" Konto erfolgreich erstellt! Weiterleitung in {i} Sekunden...";
                     StateHasChanged();
                     await Task.Delay(1000);
                 }

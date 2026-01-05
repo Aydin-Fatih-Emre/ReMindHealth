@@ -1,7 +1,5 @@
 ﻿@page "/dashboard"
 @attribute [Authorize]
-@using Microsoft.AspNetCore.Authorization
-@using ReMindHealth.Components.Layout
 @rendermode InteractiveServer
 @layout AppLayout
 <div class="app-frame">
@@ -10,9 +8,8 @@
             <h2 class="greeting">@greeting</h2>
             <button class="settings-icon" @onclick="@(() => NavigateTo("/Account/Manage"))" title="Kontoeinstellungen">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M12 1v6m0 6v6m-7-7h6m6 0h6"></path>
-                    <path d="M19.4 15a9 9 0 01-7.4 4 9 9 0 01-7.4-4m14.8-6a9 9 0 00-7.4-4 9 9 0 00-7.4 4"></path>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
                 </svg>
             </button>
         </div>
@@ -57,7 +54,7 @@
             {
                 @foreach (var conversation in recentConversations)
                 {
-                    <div class="summary-card">
+                    <div class="summary-card" @onclick="() => NavigateToConversation(conversation.ConversationId)">
                         <img src="images/brain.png" alt="Icon" class="summary-icon" />
                         <div class="summary-info">
                             <p class="summary-title">@conversation.Title</p>

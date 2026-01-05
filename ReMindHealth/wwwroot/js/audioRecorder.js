@@ -118,11 +118,3 @@ function blobToBase64(blob) {
         reader.readAsDataURL(blob);
     });
 }
-
-// For debugging
-window.testAudioRecorder = () => {
-    console.log('Audio Recorder Status:');
-    console.log('- dotNetHelper:', dotNetHelper ? 'Connected' : 'Not connected');
-    console.log('- mediaRecorder:', mediaRecorder ? mediaRecorder.state : 'Not initialized');
-    console.log('- Browser supports getUserMedia:', navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? 'Yes' : 'No');
-};

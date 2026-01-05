@@ -1,16 +1,13 @@
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
+using ReMindHealth;
 using ReMindHealth.Components;
-using ReMindHealth.Components.Account;
-using ReMindHealth.Data;
-using ReMindHealth.Services.Implementations;
-using ReMindHealth.Services.Interfaces;
+using ReMindHealth.Domain.Models;
+using ReMindHealth.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -23,7 +20,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddIdentityCookies();
 
-// Configure database connection with support for both Docker and Render
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 if (string.IsNullOrEmpty(connectionString))
@@ -34,7 +30,6 @@ if (string.IsNullOrEmpty(connectionString))
     {
         try
         {
-            // Parse Render's DATABASE_URL format: postgresql://user:pass@host:port/db
             var uri = new Uri(databaseUrl);
             var username = uri.UserInfo.Split(':')[0];
             var password = uri.UserInfo.Split(':')[1];
@@ -78,7 +73,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 .AddSignInManager()
 .AddDefaultTokenProviders();
 
-// Add Radzen services
 builder.Services.AddRadzenComponents();
 
 builder.Services.AddServerSideBlazor()
@@ -91,17 +85,11 @@ builder.Services.AddServerSideBlazor()
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<NotificationService>();
-
-// User and business services
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IConversationService, ConversationService>();
-builder.Services.AddScoped<ITranscriptionService, AssemblyAITranscriptionService>();
-builder.Services.AddScoped<IExtractionService, GeminiExtractionService>();
-builder.Services.AddScoped<IDiseaseSearchService, GeminiDiseaseSearchService>();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -112,7 +100,6 @@ else
     app.UseHsts();
 }
 
-// Only use HTTPS redirection in production if not behind a reverse proxy
 if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
@@ -123,8 +110,6 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-
-// Ensure database is created and all migrations are applied
 try
 {
     using (var scope = app.Services.CreateScope())

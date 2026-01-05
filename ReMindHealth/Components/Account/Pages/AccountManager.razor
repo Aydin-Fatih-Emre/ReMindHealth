@@ -2,26 +2,19 @@
 @attribute [Authorize]
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Identity
-@using ReMindHealth.Data
+@using ReMindHealth.Application.DTOs.Responses
 @rendermode InteractiveServer
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
-@inject ILogger<AccountManager> Logger
-@inject NavigationManager NavigationManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Kontoeinstellungen</PageTitle>
 
 <div class="account-container">
-
     <div class="account-card">
         <button class="zurueck-wrapper" @onclick='() => GoBack()'>
             <img src="images/zurueck.png" alt="Zurück" class="zurueck-button" />
         </button>
+
         <!-- Header -->
         <div class="account-header">
-         
             <h1>Kontoeinstellungen</h1>
         </div>
 
@@ -84,12 +77,6 @@
                         <ValidationMessage For="() => ProfileInput.LastName" class="text-danger" />
                     </div>
 
-                    <div class="form-group">
-                        <label>Geburtsdatum</label>
-                        <InputDate @bind-Value="ProfileInput.DateOfBirth" class="form-control" />
-                        <ValidationMessage For="() => ProfileInput.DateOfBirth" class="text-danger" />
-                    </div>
-
                     <button type="submit" class="btn-primary" disabled="@isSubmitting">
                         @if (isSubmitting)
                         {
@@ -108,6 +95,12 @@
                 <h2>Passwort ändern</h2>
                 <EditForm Model="PasswordInput" OnValidSubmit="ChangePassword" FormName="password">
                     <DataAnnotationsValidator />
+
+                    <div class="form-group">
+                        <label>Aktuelles Passwort</label>
+                        <InputText type="password" @bind-Value="PasswordInput.OldPassword" class="form-control" placeholder="Aktuelles Passwort" />
+                        <ValidationMessage For="() => PasswordInput.OldPassword" class="text-danger" />
+                    </div>
 
                     <div class="form-group">
                         <label>Neues Passwort</label>
