@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
+using ReMindHealth;
 using ReMindHealth.Components;
-using ReMindHealth.Data;
-using ReMindHealth.Services.Implementations;
-using ReMindHealth.Services.Interfaces;
+using ReMindHealth.Domain.Models;
+using ReMindHealth.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,11 +85,8 @@ builder.Services.AddServerSideBlazor()
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<NotificationService>();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IConversationService, ConversationService>();
-builder.Services.AddScoped<ITranscriptionService, AssemblyAITranscriptionService>();
-builder.Services.AddScoped<IExtractionService, GeminiExtractionService>();
-builder.Services.AddScoped<IDiseaseSearchService, GeminiDiseaseSearchService>();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 
 var app = builder.Build();
 

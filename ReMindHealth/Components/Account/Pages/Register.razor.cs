@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
 using Radzen;
-using ReMindHealth.Data;
+using ReMindHealth.Domain.Models;
 
 namespace ReMindHealth.Components.Account.Pages
 {

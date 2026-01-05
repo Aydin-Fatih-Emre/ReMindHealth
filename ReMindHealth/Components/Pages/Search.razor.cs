@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components.Web;
-using ReMindHealth.Services;
+using ReMindHealth.Application.Services.Implementation.External;
 
 namespace ReMindHealth.Components.Pages
 {

@@ -20,7 +20,7 @@
   font-family: "Segoe UI", system-ui, sans-serif;
   overflow-y: scroll;
   width: 100%;
-  box-sizing: border-box; /* Padding in Breite einkalkulieren */
+  box-sizing: border-box;
   overflow-x: hidden;
 
 }

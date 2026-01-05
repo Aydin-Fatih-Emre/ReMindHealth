@@ -1,207 +1,198 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using ReMindHealth.Data;
+using ReMindHealth.Application.DTOs.Responses;
+using ReMindHealth.Application.Interfaces.IServices;
 
-namespace ReMindHealth.Components.Account.Pages
+namespace ReMindHealth.Components.Account.Pages;
+
+public partial class AccountManager
 {
-    public partial class AccountManager
+    private UserInfoResponse? currentUser;
+    private string? errorMessage;
+    private string? successMessage;
+    private bool isLoading = true;
+    private bool isSubmitting = false;
+    private bool showDeleteConfirmation = false;
+
+    [Inject] private IUserService UserService { get; set; } = default!;
+    [Inject] private NavigationManager NavigationManager { get; set; } = default!;
+    [Inject] private ILogger<AccountManager> Logger { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private ProfileInputModel ProfileInput { get; set; } = new();
+
+    [SupplyParameterFromForm]
+    private PasswordInputModel PasswordInput { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        private ApplicationUser? currentUser;
-        private string? errorMessage;
-        private string? successMessage;
-        private bool isLoading = true;
-        private bool isSubmitting = false;
-        private bool showDeleteConfirmation = false;
-
-        [SupplyParameterFromForm]
-        private ProfileInputModel ProfileInput { get; set; } = new();
-
-        [SupplyParameterFromForm]
-        private PasswordInputModel PasswordInput { get; set; } = new();
-
-        protected override async Task OnInitializedAsync()
+        try
         {
-            try
-            {
-                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-                var user = authState.User;
+            currentUser = await UserService.GetCurrentUserInfoAsync();
 
-                if (user.Identity?.IsAuthenticated != true)
-                {
-                    NavigationManager.NavigateTo("/Account/Login");
-                    return;
-                }
-
-                currentUser = await UserManager.GetUserAsync(user);
-
-                if (currentUser != null)
-                {
-                    // Pre-fill form with current user data
-                    ProfileInput.FirstName = currentUser.FirstName ?? "";
-                    ProfileInput.LastName = currentUser.LastName ?? "";
-                    ProfileInput.DateOfBirth = currentUser.DateOfBirth;
-                }
-            }
-            catch (Exception ex)
+            if (currentUser == null)
             {
-                Logger.LogError(ex, "Error loading account settings");
-                errorMessage = "Fehler beim Laden der Kontoeinstellungen.";
+                NavigationManager.NavigateTo("/Account/Login");
+                return;
             }
-            finally
-            {
-                isLoading = false;
-            }
+
+            // Pre-fill form with current user data
+            ProfileInput.FirstName = currentUser.FirstName;
+            ProfileInput.LastName = currentUser.LastName;
         }
-
-        private async Task UpdateProfile()
+        catch (Exception ex)
         {
-            if (isSubmitting || currentUser == null) return;
+            Logger.LogError(ex, "Error loading account settings");
+            errorMessage = "Fehler beim Laden der Kontoeinstellungen.";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 
-            isSubmitting = true;
-            errorMessage = null;
-            successMessage = null;
+    private async Task UpdateProfile()
+    {
+        if (isSubmitting || currentUser == null) return;
 
-            try
+        isSubmitting = true;
+        errorMessage = null;
+        successMessage = null;
+
+        try
+        {
+            var success = await UserService.UpdateUserProfileAsync(
+                currentUser.UserId,
+                ProfileInput.FirstName,
+                ProfileInput.LastName);
+
+            if (success)
             {
-                currentUser.FirstName = ProfileInput.FirstName;
-                currentUser.LastName = ProfileInput.LastName;
-                currentUser.DateOfBirth = ProfileInput.DateOfBirth;
+                successMessage = "✓ Profil erfolgreich aktualisiert!";
 
-                var result = await UserManager.UpdateAsync(currentUser);
-
-                if (result.Succeeded)
-                {
-                    successMessage = " Profil erfolgreich aktualisiert!";
-                }
-                else
-                {
-                    errorMessage = string.Join(" ", result.Errors.Select(e => e.Description));
-                }
+                // Refresh current user data
+                currentUser = await UserService.GetCurrentUserInfoAsync();
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogError(ex, "Error updating profile");
                 errorMessage = "Fehler beim Aktualisieren des Profils.";
             }
-            finally
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error updating profile");
+            errorMessage = "Fehler beim Aktualisieren des Profils.";
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private async Task ChangePassword()
+    {
+        if (isSubmitting || currentUser == null) return;
+
+        isSubmitting = true;
+        errorMessage = null;
+        successMessage = null;
+
+        try
+        {
+            var success = await UserService.ChangePasswordAsync(
+                currentUser.UserId,
+                PasswordInput.OldPassword,
+                PasswordInput.NewPassword);
+
+            if (success)
             {
-                isSubmitting = false;
+                successMessage = "✓ Passwort erfolgreich geändert!";
+                PasswordInput = new PasswordInputModel();
+            }
+            else
+            {
+                errorMessage = "Das aktuelle Passwort ist falsch oder das neue Passwort erfüllt nicht die Anforderungen.";
             }
         }
-
-        private async Task ChangePassword()
+        catch (Exception ex)
         {
-            if (isSubmitting || currentUser == null) return;
-
-            isSubmitting = true;
-            errorMessage = null;
-            successMessage = null;
-
-            try
-            {
-                var result = await UserManager.ChangePasswordAsync(
-                    currentUser,
-                    PasswordInput.OldPassword,
-                    PasswordInput.NewPassword
-                );
-
-                if (result.Succeeded)
-                {
-                    await SignInManager.RefreshSignInAsync(currentUser);
-                    successMessage = " Passwort erfolgreich geändert!";
-                    PasswordInput = new PasswordInputModel();
-                }
-                else
-                {
-                    errorMessage = string.Join(" ", result.Errors.Select(e => e.Description));
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Error changing password");
-                errorMessage = "Fehler beim Ändern des Passworts.";
-            }
-            finally
-            {
-                isSubmitting = false;
-            }
+            Logger.LogError(ex, "Error changing password");
+            errorMessage = "Fehler beim Ändern des Passworts.";
         }
-
-        private void ShowDeleteConfirmation()
+        finally
         {
-            showDeleteConfirmation = true;
-            errorMessage = null;
-            successMessage = null;
+            isSubmitting = false;
         }
+    }
 
-        private void CancelDelete()
+    private void ShowDeleteConfirmation()
+    {
+        showDeleteConfirmation = true;
+        errorMessage = null;
+        successMessage = null;
+    }
+
+    private void CancelDelete()
+    {
+        showDeleteConfirmation = false;
+    }
+
+    private async Task DeleteAccount()
+    {
+        if (isSubmitting || currentUser == null) return;
+
+        isSubmitting = true;
+        errorMessage = null;
+
+        try
         {
-            showDeleteConfirmation = false;
-        }
+            var success = await UserService.DeleteAccountAsync(currentUser.UserId); 
 
-        private async Task DeleteAccount()
-        {
-            if (isSubmitting || currentUser == null) return;
-
-            isSubmitting = true;
-            errorMessage = null;
-
-            try
+            if (success)
             {
-                currentUser.IsActive = false;
-                var result = await UserManager.UpdateAsync(currentUser);
-
-                if (result.Succeeded)
-                {
-                    await SignInManager.SignOutAsync();
-
-                    NavigationManager.NavigateTo("/Account/Login", true);
-                }
-                else
-                {
-                    errorMessage = "Fehler beim Löschen des Kontos.";
-                    isSubmitting = false;
-                }
+                NavigationManager.NavigateTo("/Account/Login", true);
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogError(ex, "Error deleting account");
                 errorMessage = "Fehler beim Löschen des Kontos.";
                 isSubmitting = false;
             }
         }
-
-        private void GoBack()
+        catch (Exception ex)
         {
-            NavigationManager.NavigateTo("/dashboard");
+            Logger.LogError(ex, "Error deleting account");
+            errorMessage = "Fehler beim Löschen des Kontos.";
+            isSubmitting = false;
         }
+    }
 
-        private sealed class ProfileInputModel
-        {
-            [StringLength(50, ErrorMessage = "Vorname darf maximal 50 Zeichen lang sein.")]
-            public string FirstName { get; set; } = "";
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/dashboard");
+    }
 
-            [StringLength(50, ErrorMessage = "Nachname darf maximal 50 Zeichen lang sein.")]
-            public string LastName { get; set; } = "";
+    private sealed class ProfileInputModel
+    {
+        [StringLength(50, ErrorMessage = "Vorname darf maximal 50 Zeichen lang sein.")]
+        public string FirstName { get; set; } = "";
 
-            public DateTime? DateOfBirth { get; set; }
-        }
+        [StringLength(50, ErrorMessage = "Nachname darf maximal 50 Zeichen lang sein.")]
+        public string LastName { get; set; } = "";
+    }
 
-        private sealed class PasswordInputModel
-        {
-            [Required(ErrorMessage = "Aktuelles Passwort ist erforderlich")]
-            [DataType(DataType.Password)]
-            public string OldPassword { get; set; } = "";
+    private sealed class PasswordInputModel
+    {
+        [Required(ErrorMessage = "Aktuelles Passwort ist erforderlich")]
+        [DataType(DataType.Password)]
+        public string OldPassword { get; set; } = "";
 
-            [Required(ErrorMessage = "Neues Passwort ist erforderlich")]
-            [StringLength(100, ErrorMessage = "Das Passwort muss mindestens {2} Zeichen lang sein.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            public string NewPassword { get; set; } = "";
+        [Required(ErrorMessage = "Neues Passwort ist erforderlich")]
+        [StringLength(100, ErrorMessage = "Das Passwort muss mindestens {2} Zeichen lang sein.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        public string NewPassword { get; set; } = "";
 
-            [DataType(DataType.Password)]
-            [Compare("NewPassword", ErrorMessage = "Die Passwörter stimmen nicht überein.")]
-            public string ConfirmPassword { get; set; } = "";
-        }
+        [DataType(DataType.Password)]
+        [Compare("NewPassword", ErrorMessage = "Die Passwörter stimmen nicht überein.")]
+        public string ConfirmPassword { get; set; } = "";
     }
 }

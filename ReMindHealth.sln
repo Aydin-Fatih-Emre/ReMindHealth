@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReMindHealth", "ReMindHealt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReMindHealth.Tests", "ReMindHealth.Tests\ReMindHealth.Tests.csproj", "{B584B7CB-7DA8-40AC-BF82-2A3B07CB019B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReMindHealth.Domain", "ReMindHealth.Domain\ReMindHealth.Domain.csproj", "{F8067736-51C1-44DF-BE0A-0E37DD51B710}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReMindHealth.Application", "ReMindHealth.Application\ReMindHealth.Application.csproj", "{8B8F4092-7462-4C0D-B643-582C7F09DF4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReMindHealth.Infrastructure", "ReMindHealth.Infrastructure\ReMindHealth.Infrastructure.csproj", "{01EE6CDD-B775-495D-BC5E-586CBAB922C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{B584B7CB-7DA8-40AC-BF82-2A3B07CB019B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B584B7CB-7DA8-40AC-BF82-2A3B07CB019B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B584B7CB-7DA8-40AC-BF82-2A3B07CB019B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8067736-51C1-44DF-BE0A-0E37DD51B710}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8067736-51C1-44DF-BE0A-0E37DD51B710}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8067736-51C1-44DF-BE0A-0E37DD51B710}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8067736-51C1-44DF-BE0A-0E37DD51B710}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B8F4092-7462-4C0D-B643-582C7F09DF4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B8F4092-7462-4C0D-B643-582C7F09DF4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B8F4092-7462-4C0D-B643-582C7F09DF4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B8F4092-7462-4C0D-B643-582C7F09DF4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01EE6CDD-B775-495D-BC5E-586CBAB922C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01EE6CDD-B775-495D-BC5E-586CBAB922C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01EE6CDD-B775-495D-BC5E-586CBAB922C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01EE6CDD-B775-495D-BC5E-586CBAB922C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using ReMindHealth.Data;
-using ReMindHealth.Models;
-using ReMindHealth.Services.Interfaces;
+using ReMindHealth.Application.Interfaces.IServices;
+using ReMindHealth.Domain.Models;
+using ReMindHealth.Infrastructure.Data;
 
 namespace ReMindHealth.Components.Pages
 {
@@ -78,6 +78,10 @@ namespace ReMindHealth.Components.Pages
         private void NavigateTo(string url)
         {
             NavigationManager.NavigateTo(url);
+        }
+        private void NavigateToConversation(Guid conversationId)
+        {
+            NavigationManager.NavigateTo($"/summaries?id={conversationId}");
         }
     }
 }

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using ReMindHealth.Models;
-using ReMindHealth.Services.Interfaces;
+using ReMindHealth.Application.Interfaces.IServices;
+using ReMindHealth.Domain.Models;
 
 namespace ReMindHealth.Components.Pages
 {
@@ -9,6 +8,9 @@ namespace ReMindHealth.Components.Pages
     {
         [Inject] private NavigationManager NavigationManager { get; set; } = default!;
         [Inject] private IConversationService ConversationService { get; set; } = default!;
+
+        [SupplyParameterFromQuery(Name = "id")]
+        public Guid? ConversationId { get; set; }
 
         private bool isLoading = true;
         private List<Conversation> conversations = new();
@@ -24,6 +26,16 @@ namespace ReMindHealth.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             await LoadConversations();
+
+            // Auto-select conversation if ID is provided in query string
+            if (ConversationId.HasValue)
+            {
+                var conversation = conversations.FirstOrDefault(c => c.ConversationId == ConversationId.Value);
+                if (conversation != null)
+                {
+                    await SelectConversation(conversation);
+                }
+            }
         }
 
         private async Task LoadConversations()
