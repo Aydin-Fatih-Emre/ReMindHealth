@@ -69,10 +69,20 @@ public class AppointmentRepository : IAppointmentRepository
         return entity;
     }
 
-    public Task UpdateAsync(ExtractedAppointment entity, CancellationToken cancellationToken = default)
+    public async Task UpdateAsync(ExtractedAppointment entity, CancellationToken cancellationToken = default)
     {
-        _context.ExtractedAppointments.Update(entity);
-        return Task.CompletedTask;
+        var existingAppointment = await _context.ExtractedAppointments
+            .FirstOrDefaultAsync(a => a.AppointmentId == entity.AppointmentId, cancellationToken);
+
+        if (existingAppointment != null)
+        {
+            existingAppointment.Title = entity.Title;
+            existingAppointment.Description = entity.Description;
+            existingAppointment.Location = entity.Location;
+            existingAppointment.AppointmentDateTime = entity.AppointmentDateTime;
+            existingAppointment.DurationMinutes = entity.DurationMinutes;
+            existingAppointment.AttendeeNames = entity.AttendeeNames;
+        }
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
