@@ -245,7 +245,6 @@
     margin-top: 2rem;
     max-height: 50vh; /* verhindert Überlaufen */
     overflow-y: auto; /* WICHTIG: Inhalt scrollt */ 
-    display: flex; /* WICHTIG: Buttons bleiben unten */
 }
 
     .transcription-review label {
