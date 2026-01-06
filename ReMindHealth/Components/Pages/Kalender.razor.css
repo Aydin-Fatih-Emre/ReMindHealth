@@ -5,7 +5,6 @@
   align-items: center;
   height: 100vh;
   background-color: #f9fafc;
-  padding: 1rem;
 }
 
 .home-container {
@@ -13,15 +12,16 @@
   border-radius: 2rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   max-width: 430px;
-  height: 90vh;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   padding: 2rem 1.5rem;
   font-family: "Segoe UI", system-ui, sans-serif;
-  overflow-y: scroll;
+  overflow-y: hidden;
   width: 100%;
   box-sizing: border-box;
   overflow-x: hidden;
+   position: relative; /* WICHTIG */
 
 }
 .termin-item.overdue {
@@ -109,13 +109,14 @@
 .termin-list {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-height: 0; /* wichtig bei flexbox */
     gap: 0.75rem;
     margin-bottom: 1.5rem;
-    max-height: 300px;
-    
-    overflow-y: scroll;
+    overflow-y: auto;
+    scrollbar-gutter: stable both-edges;
     padding: 0.5rem;
-    min-height: 120px
+    padding-right: 12px; /* iOS Fix */
 }
 
 .termin-item {
@@ -162,7 +163,13 @@
     padding: 1rem;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     margin-top: 1.5rem;
+
+    max-height: 200px;   /* Card bleibt gleich groß */
+    overflow-y: auto;    /* Inhalt scrollt */
+    flex-shrink: 0;      /* verhindert, dass die Card wächst */
+    
 }
+
 
 .no-info {
     text-align: center;
@@ -193,11 +200,6 @@
     gap: 1rem;
 }
 
-    .termin-info i.bi-calendar-check-fill {
-        font-size: 2.5rem;
-        color: #667eea;
-        margin-bottom: 0.5rem;
-    }
 
     .termin-info h4 {
         margin: 0;
@@ -303,6 +305,21 @@
         background-color: #bb2d3b;
     }
 
+.termin-header-row {
+    display: flex;
+    align-items: center;       /* sorgt dafür, dass Icon und Buttons vertikal zentriert sind */
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.termin-icon i {
+    font-size: 2rem;
+    color: #667eea;
+}
+
+
+     
+
 .btn-danger {
     background-color: #dc3545;
     color: white;
@@ -361,12 +378,13 @@
 }
 /* Overlay */
 .modal-overlay {
-    position: fixed;
+    position: absolute;
     inset: 0;
     background: rgba(0,0,0,0.35);
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 2rem; /* optional, passt zum Frame */
 }
 
 /* Modal Box */

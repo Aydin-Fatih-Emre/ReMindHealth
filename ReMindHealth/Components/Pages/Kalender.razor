@@ -53,6 +53,10 @@
             @if (selectedTermin != null)
             {
                 <div class="termin-detail">
+                    <div class="termin-header-row">
+                    <div class="termin-icon"> 
+                        <i class="bi bi-calendar-check-fill"></i> 
+                    </div>
                     <!-- Action Buttons -->
                     <div class="termin-actions">
                         <button class="btn-edit" @onclick="OpenEditModal" title="Bearbeiten">
@@ -61,6 +65,7 @@
                         <button class="btn-delete" @onclick="OpenDeleteConfirm" title="Löschen">
                             <i class="bi bi-trash-fill"></i>
                         </button>
+                    </div>
                     </div>
 
                     @if (string.IsNullOrWhiteSpace(selectedTermin.Title))
@@ -73,7 +78,6 @@
                     else
                     {
                         <div class="termin-info">
-                            <i class="bi bi-calendar-check-fill"></i>
                             <h4>@selectedTermin.Title</h4>
                             <p class="termin-zeit">
                                 <i class="bi bi-clock"></i>

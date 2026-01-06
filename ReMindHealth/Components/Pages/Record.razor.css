@@ -39,7 +39,6 @@
 .record-container {
     
     max-width: 430px; 
-    height: 90vh; 
     background-color: #ffffff;
     border-radius: 2rem;
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
@@ -48,6 +47,8 @@
     justify-content: center; 
     align-items: center;
     padding: 2rem 1.5rem;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 /* Card Header */
@@ -242,6 +243,7 @@
     border-radius: 16px;
     padding: 2rem;
     margin-top: 2rem;
+    max-height: 50vh; /* verhindert Überlaufen */
 }
 
     .transcription-review label {
@@ -262,6 +264,7 @@
         line-height: 1.6;
         resize: vertical;
         transition: border-color 0.3s ease;
+        max-height: 30vh;
     }
 
         .transcription-review textarea:focus {
