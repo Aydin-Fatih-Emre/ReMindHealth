@@ -53,6 +53,16 @@
             @if (selectedTermin != null)
             {
                 <div class="termin-detail">
+                    <!-- Action Buttons -->
+                    <div class="termin-actions">
+                        <button class="btn-edit" @onclick="OpenEditModal" title="Bearbeiten">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-delete" @onclick="OpenDeleteConfirm" title="Löschen">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </div>
+
                     @if (string.IsNullOrWhiteSpace(selectedTermin.Title))
                     {
                         <div class="no-info">
@@ -98,6 +108,75 @@
                             }
                         </div>
                     }
+                </div>
+            }
+
+            <!-- Edit Modal -->
+            @if (showEditModal)
+            {
+                <div class="modal-overlay" @onclick="CloseEditModal">
+                    <div class="modal-content" @onclick:stopPropagation="true">
+                        <div class="modal-header">
+                            <h3>Termin bearbeiten</h3>
+                            <button class="close-btn" @onclick="CloseEditModal">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            @if (!string.IsNullOrEmpty(errorMessage))
+                            {
+                                <div class="error-message">@errorMessage</div>
+                            }
+                            <div class="form-group">
+                                <label>Titel *</label>
+                                <input type="text" @bind="editTermin.Title" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Datum und Uhrzeit *</label>
+                                <input type="datetime-local" @bind="editTermin.AppointmentDateTime" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Beschreibung</label>
+                                <textarea @bind="editTermin.Description" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Ort</label>
+                                <input type="text" @bind="editTermin.Location" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Teilnehmer</label>
+                                <input type="text" @bind="editTermin.AttendeeNames" class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label>Dauer (Minuten)</label>
+                                <input type="number" @bind="editTermin.DurationMinutes" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-secondary" @onclick="CloseEditModal">Abbrechen</button>
+                            <button class="btn-primary" @onclick="SaveEditTermin">Speichern</button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- Delete Confirmation Modal -->
+            @if (showDeleteConfirm)
+            {
+                <div class="modal-overlay" @onclick="CloseDeleteConfirm">
+                    <div class="modal-content modal-small" @onclick:stopPropagation="true">
+                        <div class="modal-header">
+                            <h3>Termin löschen?</h3>
+                        </div>
+                        <div class="modal-body">
+                            <p>Möchten Sie den Termin "<strong>@selectedTermin?.Title</strong>" wirklich löschen?</p>
+                            <p class="warning-text">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-secondary" @onclick="CloseDeleteConfirm">Abbrechen</button>
+                            <button class="btn-danger" @onclick="ConfirmDelete">Löschen</button>
+                        </div>
+                    </div>
                 </div>
             }
         }
