@@ -44,7 +44,7 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.08);
     display: flex;
     flex-direction: column;
-    justify-content: center; 
+    justify-content: flex-start; 
     align-items: center;
     padding: 2rem 1.5rem;
     max-height: 90vh;
@@ -244,6 +244,8 @@
     padding: 2rem;
     margin-top: 2rem;
     max-height: 50vh; /* verhindert Überlaufen */
+    overflow-y: auto; /* WICHTIG: Inhalt scrollt */ 
+    display: flex; /* WICHTIG: Buttons bleiben unten */
 }
 
     .transcription-review label {
