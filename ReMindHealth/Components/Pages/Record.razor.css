@@ -245,11 +245,7 @@
     padding: 2rem;
     margin-top: 2rem;
     overflow-y: auto; /* WICHTIG: Inhalt scrollt */ 
-    max-height: 60vh;
-    min-width: 30vh;
-    display: flex; 
-    flex-direction: column; 
-    gap: 1.5rem;
+    max-height: 200vh;
     
 }
 
