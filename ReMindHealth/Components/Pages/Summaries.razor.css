@@ -1,4 +1,11 @@
-﻿.header-with-back {
+﻿/* Container and Layout */
+.home-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+}
+
+.header-with-back {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -11,6 +18,52 @@
     gap: 1rem;
 }
 
+/* Back Button */
+.zurueck-wrapper {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.zurueck-button {
+    width: 40px;
+    height: 40px;
+}
+
+/* Filter Controls */
+.filter-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.filter-button {
+    background: white;
+    border: 2px solid #e0e0e0;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+    .filter-button:hover {
+        border-color: #007bff;
+        background: #f8f9fa;
+    }
+
+    .filter-button.active {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+/* Conversation Cards */
 .conversation-card {
     background: white;
     border-radius: 12px;
@@ -18,6 +71,10 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: all 0.3s ease;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
     .conversation-card:hover {
@@ -51,6 +108,8 @@
     font-size: 1.1rem;
     font-weight: 600;
     color: #333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .conversation-date {
@@ -59,50 +118,18 @@
     color: #666;
 }
 
-/* Favorites Filter */
-.filter-controls {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.filter-button {
-    background: white;
-    border: 2px solid #e0e0e0;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-    .filter-button:hover {
-        border-color: #007bff;
-        background: #f8f9fa;
-    }
-
-    .filter-button.active {
-        background: #007bff;
-        color: white;
-        border-color: #007bff;
-    }
-
+/* Favorite Button */
 .favorite-button {
     background: white;
     border: 2px solid #e0e0e0;
     cursor: pointer;
     padding: 0.25rem;
-    font-size: 1rem;
     transition: transform 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    width: 32px; 
+    width: 32px;
     height: 32px;
     flex-shrink: 0;
 }
@@ -113,11 +140,10 @@
     }
 
     .favorite-button i {
-        display: block;
-        font-size: 0.7rem; 
+        font-size: 0.7rem;
     }
 
-
+/* Status Badges */
 .status-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
@@ -144,14 +170,20 @@
         color: #721c24;
     }
 
+/* Conversation Details */
 .conversation-details {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid #e0e0e0;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    word-break: break-word;
 }
 
 .detail-section {
     margin-bottom: 1.5rem;
+    max-width: 100%;
 }
 
     .detail-section h5 {
@@ -159,29 +191,39 @@
         font-size: 1rem;
         font-weight: 600;
         color: #007bff;
+        word-wrap: break-word;
     }
 
     .detail-section p {
         margin: 0.5rem 0;
         color: #555;
         line-height: 1.6;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
 
+/* Transcription */
 .transcription-text {
     background: #f8f9fa;
     padding: 1rem;
     border-radius: 8px;
     font-size: 0.95rem;
     white-space: pre-wrap;
-    max-height: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-height: 400px;
     overflow-y: auto;
 }
 
+/* Extracted Items */
 .extracted-item {
     background: #f8f9fa;
     padding: 1rem;
     border-radius: 8px;
     margin-bottom: 0.75rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
     .extracted-item strong {
@@ -195,8 +237,8 @@
         font-size: 0.9rem;
     }
 
-.priority-badge,
-.note-type-badge {
+/* Priority Badges */
+.priority-badge {
     display: inline-block;
     padding: 0.25rem 0.5rem;
     border-radius: 8px;
@@ -225,11 +267,184 @@
         color: #155724;
     }
 
+/* Note Type Badge */
 .note-type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
     background: #e7f3ff;
     color: #004085;
 }
 
+/* Note Metadata */
+.note-metadata {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Disease Information */
+.disease-note {
+    border-left: 4px solid #667eea;
+    background: linear-gradient(to right, #f0f4ff 0%, #f8f9fa 100%);
+}
+
+.disease-info-section {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    border: 2px solid #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.disease-info-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e0e0e0;
+    font-weight: 700;
+    color: #667eea;
+    font-size: 1.15rem;
+}
+
+    .disease-info-header i {
+        font-size: 1.5rem;
+    }
+
+.disease-field {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+    .field-label i {
+        color: #667eea;
+        font-size: 1.1rem;
+    }
+
+    .field-label strong {
+        color: #333;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+.disease-field p {
+    margin: 0.5rem 0;
+    line-height: 1.7;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.disease-list {
+    margin: 0.5rem 0 0 0;
+    padding-left: 1.5rem;
+    list-style: none;
+}
+
+    .disease-list li {
+        position: relative;
+        margin: 0.5rem 0;
+        padding-left: 1rem;
+        line-height: 1.6;
+        color: #555;
+        font-size: 0.95rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+
+        .disease-list li::before {
+            content: "●";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+.warning-field {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border-left: 4px solid #ffc107;
+}
+
+    .warning-field .field-label i {
+        color: #f57c00;
+    }
+
+    .warning-field .field-label strong {
+        color: #e65100;
+    }
+
+.info-field {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-left: 4px solid #2196f3;
+}
+
+    .info-field .field-label i {
+        color: #1976d2;
+    }
+
+.medical-disclaimer {
+    display: flex;
+    align-items: start;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #fff3cd;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+}
+
+    .medical-disclaimer i {
+        color: #f57c00;
+        font-size: 1.25rem;
+        margin-top: 0.1rem;
+        flex-shrink: 0;
+    }
+
+    .medical-disclaimer p {
+        margin: 0;
+        color: #856404;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        font-weight: 500;
+    }
+
+.disease-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+    .disease-badge i {
+        font-size: 0.85rem;
+    }
+
+/* Loading and Empty States */
 .loading-state,
 .no-summaries {
     text-align: center;
@@ -258,14 +473,21 @@
         background: #0056b3;
     }
 
-.zurueck-wrapper {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .home-container {
+        padding: 0.75rem;
+    }
 
-.zurueck-button {
-    width: 40px;
-    height: 40px;
+    .conversation-card {
+        padding: 1rem;
+    }
+
+    .disease-info-section {
+        padding: 1rem;
+    }
+
+    .disease-field {
+        padding: 0.75rem;
+    }
 }

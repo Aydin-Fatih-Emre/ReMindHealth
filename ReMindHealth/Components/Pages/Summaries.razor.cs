@@ -104,5 +104,103 @@ namespace ReMindHealth.Components.Pages
         {
             NavigationManager.NavigateTo("/dashboard");
         }
+
+        private DiseaseNoteData ParseDiseaseInfo(string content)
+        {
+            var data = new DiseaseNoteData();
+            var parts = content.Split(new[] { "--- Krankheitsinformationen ---" }, StringSplitOptions.None);
+
+            data.RegularContent = parts[0].Trim();
+
+            if (parts.Length > 1)
+            {
+                data.HasDiseaseInfo = true;
+                var diseaseSection = parts[1].Trim();
+                var lines = diseaseSection.Split('\n');
+
+                string currentSection = "";
+                foreach (var line in lines)
+                {
+                    var trimmedLine = line.Trim();
+                    if (string.IsNullOrEmpty(trimmedLine)) continue;
+
+                    if (trimmedLine.StartsWith("Beschreibung:"))
+                    {
+                        currentSection = "description";
+                        data.Description = trimmedLine.Replace("Beschreibung:", "").Trim();
+                    }
+                    else if (trimmedLine.StartsWith("Symptome:"))
+                    {
+                        currentSection = "symptoms";
+                    }
+                    else if (trimmedLine.StartsWith("Ursachen:"))
+                    {
+                        currentSection = "causes";
+                    }
+                    else if (trimmedLine.StartsWith("Behandlungsmöglichkeiten:"))
+                    {
+                        currentSection = "treatments";
+                    }
+                    else if (trimmedLine.StartsWith("Vorbeugung:"))
+                    {
+                        currentSection = "prevention";
+                    }
+                    else if (trimmedLine.StartsWith("Wann zum Arzt:"))
+                    {
+                        currentSection = "doctor";
+                    }
+                    else if (trimmedLine.StartsWith("Zusätzliche Informationen:") || trimmedLine.StartsWith("Zusätzlich:"))
+                    {
+                        currentSection = "additional";
+                        var additionalText = trimmedLine.Replace("Zusätzliche Informationen:", "").Replace("Zusätzlich:", "").Trim();
+                        if (!string.IsNullOrEmpty(additionalText))
+                        {
+                            data.AdditionalInfo = additionalText;
+                        }
+                    }
+                    else if (trimmedLine.StartsWith("•") || trimmedLine.StartsWith("-"))
+                    {
+                        var item = trimmedLine.TrimStart('•', '-').Trim();
+                        switch (currentSection)
+                        {
+                            case "symptoms":
+                                data.Symptoms.Add(item);
+                                break;
+                            case "causes":
+                                data.Causes.Add(item);
+                                break;
+                            case "treatments":
+                                data.Treatments.Add(item);
+                                break;
+                            case "prevention":
+                                data.Prevention.Add(item);
+                                break;
+                            case "doctor":
+                                data.WhenToSeeDoctor.Add(item);
+                                break;
+                        }
+                    }
+                    else if (currentSection == "additional" && !string.IsNullOrEmpty(trimmedLine))
+                    {
+                        data.AdditionalInfo += " " + trimmedLine;
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        private class DiseaseNoteData
+        {
+            public string RegularContent { get; set; } = "";
+            public bool HasDiseaseInfo { get; set; }
+            public string Description { get; set; } = "";
+            public List<string> Symptoms { get; set; } = new();
+            public List<string> Causes { get; set; } = new();
+            public List<string> Treatments { get; set; } = new();
+            public List<string> Prevention { get; set; } = new();
+            public List<string> WhenToSeeDoctor { get; set; } = new();
+            public string AdditionalInfo { get; set; } = "";
+        }
     }
 }
