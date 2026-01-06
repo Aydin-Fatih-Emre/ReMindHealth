@@ -142,13 +142,73 @@
                                             <h5>Notizen (@conversationDetails.ExtractedNotes.Count)</h5>
                                             @foreach (var note in conversationDetails.ExtractedNotes)
                                             {
-                                                <div class="extracted-item">
-                                                    @if (!string.IsNullOrEmpty(note.Title))
+                                                <div class="extracted-item @(note.Content.Contains("--- Krankheitsinformationen ---") ? "disease-note" : "")">
+
+                                                    @if (note.Content.Contains("--- Krankheitsinformationen ---"))
                                                     {
-                                                        <strong>@note.Title</strong>
+                                                        var diseaseData = ParseDiseaseInfo(note.Content);
+
+                                                        if (!string.IsNullOrEmpty(diseaseData.RegularContent))
+                                                        {
+                                                            <p>@diseaseData.RegularContent</p>
+                                                        }
+
+                                                        if (diseaseData.HasDiseaseInfo)
+                                                        {
+                                                            <div class="disease-info-section">
+                                                                <div class="disease-info-header">
+                                                                    <i class="bi bi-clipboard2-pulse-fill"></i>
+                                                                    <span>Krankheitsinformationen</span>
+                                                                </div>
+
+                                                                @if (!string.IsNullOrEmpty(diseaseData.Description))
+                                                                {
+                                                                    <div class="disease-field">
+                                                                        <div class="field-label">
+                                                               
+                                                                            <strong>Beschreibung</strong>
+                                                                        </div>
+                                                                        <p>@diseaseData.Description</p>
+                                                                    </div>
+                                                                }
+                                                                @if (diseaseData.WhenToSeeDoctor.Any())
+                                                                {
+                                                                    <div class="disease-field warning-field">
+                                                                        <div class="field-label">
+                                                                     
+                                                                            <strong>Wann zum Arzt</strong>
+                                                                        </div>
+                                                                        <ul class="disease-list">
+                                                                            @foreach (var when in diseaseData.WhenToSeeDoctor.Take(2))
+                                                                            {
+                                                                                <li>@when</li>
+                                                                            }
+                                                                        </ul>
+                                                                    </div>
+                                                                }
+                                                                @if (diseaseData.Symptoms.Any())
+                                                                {
+                                                                    <div class="disease-field">
+                                                                        <div class="field-label">
+      
+                                                                            <strong>Häufige Symptome</strong>
+                                                                        </div>
+                                                                        <ul class="disease-list">
+                                                                            @foreach (var symptom in diseaseData.Symptoms.Take(3))
+                                                                            {
+                                                                                <li>@symptom</li>
+                                                                            }
+                                                                         @*    @if (diseaseData.Symptoms.Count > 3)
+                                                                            {
+                                                                                <li class="more-info">und @(diseaseData.Symptoms.Count - 3) weitere...</li>
+                                                                            } *@
+                                                                        </ul>
+                                                                    </div>
+                                                                }
+
+                                                            </div>
+                                                        }
                                                     }
-                                                    <p>@note.Content</p>
-                                                    <span class="note-type-badge">@note.NoteType</span>
                                                 </div>
                                             }
                                         </div>

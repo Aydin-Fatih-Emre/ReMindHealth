@@ -12,6 +12,7 @@ public class GeminiExtractionService : IExtractionService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<GeminiExtractionService> _logger;
+   
     private readonly string _apiKey;
     private readonly string _model;
 
@@ -56,7 +57,6 @@ public class GeminiExtractionService : IExtractionService
         {
             _logger.LogError(ex, "Error during Gemini extraction");
 
-            // Return empty result instead of throwing
             return new ExtractionResult
             {
                 Summary = $"Fehler bei der Verarbeitung: {ex.Message}"
@@ -127,53 +127,87 @@ public class GeminiExtractionService : IExtractionService
     {
         return $@"Du bist ein intelligenter Assistent, der medizinische Gespräche analysiert und strukturierte Informationen extrahiert.
 
-Analysiere den folgenden Transkriptionstext eines medizinischen Gesprächs und extrahiere:
-1. **Termine** (Appointments): Alle erwähnten Termine mit Datum, Uhrzeit, Ort und Beschreibung
-2. **Aufgaben** (Tasks): Alle zu erledigenden Aufgaben (z.B. Rezept abholen, Anrufe tätigen)
-3. **Notizen** (Notes): Wichtige Informationen wie Medikationen, Diagnosen, Warnungen
+        Analysiere den folgenden Transkriptionstext eines medizinischen Gesprächs und extrahiere:
+        1. **Termine** (Appointments): Alle erwähnten Termine mit Datum, Uhrzeit, Ort und Beschreibung
+        2. **Aufgaben** (Tasks): Alle zu erledigenden Aufgaben (z.B. Rezept abholen, Anrufe tätigen)
+        3. **Notizen** (Notes): Wichtige Informationen wie Krankheitsnamen, Medikationen, Diagnosen, Warnungen
 
-**WICHTIG:**
-- Datumsangaben: Heutiges Datum ist {DateTime.Now:dd.MM.yyyy}
-- Relative Zeitangaben umrechnen (z.B. ""in 3 Monaten"" → konkretes Datum)
-- Für Termine ohne Uhrzeit: 09:00 Uhr annehmen
-- Prioritäten für Aufgaben: Low, Medium, High, Urgent
-- Notiztypen: General, Important, Warning, Medication
+        **SPEZIAL: Bei Krankheitsnamen/Diagnosen**
+        Wenn eine Krankheit erwähnt wird, erstelle eine Notiz mit:
+        - Titel: Nur der Krankheitsname (z.B. ""Diabetes Typ 2"", ""Hypertonie"")
+        - NoteType: ""Important"" oder ""Medication""
+        - Content: Strukturierte medizinische Informationen in diesem Format:
 
-Antworte NUR mit folgendem JSON-Format (keine zusätzlichen Texte!):
+        <Kurze Patienteninfo aus dem Gespräch>
 
-{{
-  ""summary"": ""Kurze Zusammenfassung des Gesprächs (2-3 Sätze)"",
-  ""correctedTranscription"": null,
-  ""appointments"": [
-    {{
-      ""title"": ""Titel des Termins"",
-      ""description"": ""Beschreibung"",
-      ""appointmentDateTime"": ""2025-05-15T14:00:00"",
-      ""location"": ""Ort""
-    }}
-  ],
-  ""tasks"": [
-    {{
-      ""title"": ""Titel der Aufgabe"",
-      ""description"": ""Beschreibung"",
-      ""dueDate"": ""2025-05-10T00:00:00"",
-      ""priority"": ""High""
-    }}
-  ],
-  ""notes"": [
-    {{
-      ""title"": ""Titel der Notiz"",
-      ""content"": ""Inhalt der Notiz"",
-      ""noteType"": ""Medication"",
-      ""isPinned"": true
-    }}
-  ]
-}}
+        --- Krankheitsinformationen ---
+        Beschreibung: <Kurze, verständliche Beschreibung der Krankheit (2-3 Sätze)>
 
-**Transkription:**
-{transcriptionText}
+        Symptome:
+        - <Symptom 1>
+        - <Symptom 2>
+        - <Symptom 3>
 
-**Antwort (nur JSON):**";
+        Vorbeugung:
+        - <Vorbeugung 1>
+        - <Vorbeugung 2>
+
+        Wann zum Arzt:
+        - <Wann 1>
+        - <Wann 2>
+
+        Zusätzliche Informationen: <Wichtige Hinweise>
+
+        **WICHTIG:**
+        - Alle Krankheitsinformationen auf Deutsch
+        - Nur allgemeine, medizinisch korrekte Informationen (keine persönliche Beratung)
+        - Datumsangaben: Heutiges Datum ist {DateTime.Now:dd.MM.yyyy}
+        - Relative Zeitangaben umrechnen (z.B. ""in 3 Monaten"" → konkretes Datum)
+        - Für Termine ohne Uhrzeit: 00:00 Uhr annehmen
+        - Prioritäten für Aufgaben: Low, Medium, High, Urgent
+        - Notiztypen: General, Important, Warning, Medication
+
+        Antworte NUR mit folgendem JSON-Format (keine zusätzlichen Texte!):
+
+        {{
+          ""summary"": ""Kurze Zusammenfassung des Gesprächs (2-3 Sätze)"",
+          ""correctedTranscription"": null,
+          ""appointments"": [
+            {{
+              ""title"": ""Titel des Termins"",
+              ""description"": ""Beschreibung"",
+              ""appointmentDateTime"": ""2025-05-15T14:00:00"",
+              ""location"": ""Ort""
+            }}
+          ],
+          ""tasks"": [
+            {{
+              ""title"": ""Titel der Aufgabe"",
+              ""description"": ""Beschreibung"",
+              ""dueDate"": ""2025-05-10T00:00:00"",
+              ""priority"": ""High""
+            }}
+          ],
+          ""notes"": [
+            {{
+              ""title"": ""kranksheitname"",
+              ""content"": ""Patient wurde mit Diabetes Typ 2 diagnostiziert. Blutzuckerwerte erhöht.\n\n--- Krankheitsinformationen ---\nBeschreibung: Diabetes Typ 2 ist eine chronische Stoffwechselerkrankung, bei der der Körper Insulin nicht richtig verwerten kann. Dies führt zu erhöhten Blutzuckerwerten.\n\nSymptome:\n• Häufiges Wasserlassen\n• Starker Durst\n• Müdigkeit und Abgeschlagenheit\n• Langsame Wundheilung\n• Verschwommenes Sehen\n\nUrsachen:\n• Übergewicht und Bewegungsmangel\n• Genetische Veranlagung\n• Ungesunde Ernährung\n• Alter über 45 Jahre\n\nBehandlungsmöglichkeiten:\n• Ernährungsumstellung und Gewichtsreduktion\n• Regelmäßige körperliche Aktivität\n• Medikamente (z.B. Metformin)\n• Insulintherapie bei fortgeschrittener Erkrankung\n• Regelmäßige Blutzuckerkontrolle\n\nVorbeugung:\n• Gesunde, ausgewogene Ernährung\n• Regelmäßige Bewegung\n• Normalgewicht halten\n• Stress reduzieren\n\nWann zum Arzt:\n• Bei anhaltend erhöhten Blutzuckerwerten\n• Bei typischen Diabetes-Symptomen\n• Für regelmäßige Kontrolluntersuchungen\n• Bei Wundheilungsstörungen\n\nZusätzliche Informationen: Diabetes Typ 2 ist gut behandelbar. Mit konsequenter Therapie und Lebensstiländerungen lassen sich Folgeerkrankungen vermeiden."",
+              ""noteType"": """",
+              ""isPinned"": true
+            }},
+            {{
+              ""title"": ""Rezept"",
+              ""content"": """",
+              ""noteType"": ""Medication"",
+              ""isPinned"": false
+            }}
+          ]
+        }}
+
+        **Transkription:**
+        {transcriptionText}
+
+        **Antwort (nur JSON):**";
     }
 
     private ExtractionResult ParseExtractionResponse(string responseText, string userId)
