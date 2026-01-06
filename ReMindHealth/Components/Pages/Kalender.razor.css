@@ -359,3 +359,69 @@
 .termin-detail {
     animation: slideIn 0.3s ease-out;
 }
+/* Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Box */
+.modal-content {
+    background: #fff;
+    padding: 1.2rem;
+    border-radius: 14px;
+    width: 90%;
+    max-width: 420px;
+}
+
+/* Header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* Body */
+.form-group {
+    margin-bottom: 0.9rem;
+}
+
+.form-control {
+    border-radius: 8px;
+}
+
+/* Footer */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.btn-secondary {
+    background: #e0e0e0;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
