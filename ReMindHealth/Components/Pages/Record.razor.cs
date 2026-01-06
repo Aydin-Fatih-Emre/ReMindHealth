@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.JSInterop;
 using Radzen;
 using ReMindHealth.Application.Interfaces.IServices;
 
 namespace ReMindHealth.Components.Pages
 {
-    public partial class Record
+    public partial class Record : IDisposable
     {
         [Inject] private IJSRuntime JS { get; set; } = default!;
         [Inject] private IConversationService ConversationService { get; set; } = default!;
+        [Inject] private NavigationManager NavigationManager { get; set; } = default!;
 
         // Recording state
         private bool isRecording = false;
@@ -30,10 +32,53 @@ namespace ReMindHealth.Components.Pages
                 {
                     objRef = DotNetObjectReference.Create(this);
                     await JS.InvokeVoidAsync("initAudioRecorder", objRef);
+                    await SetupNavigationWarning();
+
+                    NavigationManager.RegisterLocationChangingHandler(OnLocationChanging);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"ERROR in OnAfterRenderAsync: {ex.Message}");
+                }
+            }
+        }
+
+        private async Task SetupNavigationWarning()
+        {
+            await JS.InvokeVoidAsync("eval", @"
+                window.addEventListener('beforeunload', function(e) {
+                    if (window.hasTranscriptionReview === true) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                        return 'Sie haben eine ungespeicherte Transkription. Möchten Sie die Seite wirklich verlassen?';
+                    }
+                });
+            ");
+        }
+
+        private async ValueTask OnLocationChanging(LocationChangingContext context)
+        {
+            if (showTranscriptionReview || isProcessing || isRecording)
+            {
+                string message = isRecording
+                    ? "Sie nehmen gerade auf. Möchten Sie die Seite wirklich verlassen? Die Aufnahme geht verloren."
+                    : "Sie haben eine laufende Verarbeitung. Möchten Sie die Seite wirklich verlassen? Alle Daten gehen verloren.";
+
+                var confirmed = await JS.InvokeAsync<bool>("confirm", message);
+
+                if (!confirmed)
+                {
+                    context.PreventNavigation();
+                }
+                else
+                {
+                    // Clean up state
+                    showTranscriptionReview = false;
+                    transcriptionText = "";
+                    pendingConversationId = null;
+                    isProcessing = false;
+                    isRecording = false;
+                    await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = false;");
                 }
             }
         }
@@ -51,6 +96,7 @@ namespace ReMindHealth.Components.Pages
             {
                 await JS.InvokeVoidAsync("startRecording");
                 isRecording = true;
+                await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = true;");
             }
             else
             {
@@ -87,7 +133,7 @@ namespace ReMindHealth.Components.Pages
                 }
 
                 isProcessing = true;
-                StateHasChanged();
+                await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = true;");
 
                 NotificationService.Notify(
                     NotificationSeverity.Info,
@@ -109,6 +155,8 @@ namespace ReMindHealth.Components.Pages
                     transcriptionText = conversation.TranscriptionText ?? "";
                     showTranscriptionReview = true;
 
+                    await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = true;");
+
                     NotificationService.Notify(
                         NotificationSeverity.Success,
                         "✓ Transkription abgeschlossen!",
@@ -125,6 +173,7 @@ namespace ReMindHealth.Components.Pages
                         conversation.ProcessingError ?? "Ein unbekannter Fehler ist aufgetreten",
                         duration: 8000);
                     isProcessing = false;
+                    await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = false;"); 
                 }
 
                 StateHasChanged();
@@ -140,6 +189,7 @@ namespace ReMindHealth.Components.Pages
                     duration: 8000);
 
                 isProcessing = false;
+                await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = false;"); 
                 StateHasChanged();
             }
         }
@@ -149,6 +199,9 @@ namespace ReMindHealth.Components.Pages
             if (!pendingConversationId.HasValue) return;
 
             showTranscriptionReview = false;
+
+            await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = false;");
+
             StateHasChanged();
 
             try
@@ -165,7 +218,6 @@ namespace ReMindHealth.Components.Pages
                     await ConversationService.UpdateTranscriptionTextOnlyAsync(
                         pendingConversationId.Value,
                         transcriptionText);
-
                 }
 
                 await ConversationService.ContinueProcessingFromTranscriptionAsync(pendingConversationId.Value);
@@ -193,12 +245,15 @@ namespace ReMindHealth.Components.Pages
             }
         }
 
-        private void CancelProcessing()
+        private async Task CancelProcessing()
         {
             showTranscriptionReview = false;
             transcriptionText = "";
             pendingConversationId = null;
             isProcessing = false;
+
+            await JS.InvokeVoidAsync("eval", "window.hasTranscriptionReview = false;");
+
             StateHasChanged();
 
             NotificationService.Notify(
