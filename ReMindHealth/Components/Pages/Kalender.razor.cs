@@ -215,7 +215,7 @@ public partial class Kalender
         }
         catch (Exception ex)
         {
-            errorMessage = $"Fehler beim Löschen: {ex.Message}";
+            errorMessage = $"Fehler beim Lï¿½schen: {ex.Message}";
             Console.WriteLine($"Error deleting appointment: {ex.Message}");
         }
     }
